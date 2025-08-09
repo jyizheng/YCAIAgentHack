@@ -6,12 +6,24 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function Home() {
   const [chatMessages, setChatMessages] = useState([
     { role: "assistant", content: "Hello! I'm your crypto VC investment assistant. I can help you analyze projects, evaluate investment opportunities, conduct due diligence, and assess market trends for venture capital decisions. What would you like to explore?" }
   ]);
   const [chatInput, setChatInput] = useState("");
+
+  // Investment analysis form state
+  const [analysisForms, setAnalysisForms] = useState({
+    thesisFit: "",
+    marketAnalysis: "",
+    teamAssessment: "",
+    traction: "",
+    risks: "",
+    valuation: "",
+    decision: ""
+  });
 
   const handleSendMessage = () => {
     if (!chatInput.trim()) return;
@@ -34,6 +46,10 @@ export default function Home() {
     }, 1000);
 
     setChatInput("");
+  };
+
+  const handleFormChange = (field: string, value: string) => {
+    setAnalysisForms(prev => ({ ...prev, [field]: value }));
   };
 
   return (
@@ -127,9 +143,12 @@ export default function Home() {
                       <div className="w-2 h-2 bg-orange-400 rounded-full mr-3"></div>
                       Thesis Fit & Narrative
                     </h3>
-                    <p className="text-slate-300 text-sm leading-relaxed pl-5">
-                      Evaluate how the startup aligns with a current A16Z crypto investment thesis, and whether it fits with macro trends.
-                    </p>
+                    <Textarea
+                      value={analysisForms.thesisFit}
+                      onChange={(e) => handleFormChange('thesisFit', e.target.value)}
+                      placeholder="Evaluate how the startup aligns with a current A16Z crypto investment thesis, and whether it fits with macro trends..."
+                      className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400 focus:border-orange-500 min-h-[80px]"
+                    />
                   </div>
 
                   {/* Market Analysis */}
@@ -138,9 +157,12 @@ export default function Home() {
                       <div className="w-2 h-2 bg-blue-400 rounded-full mr-3"></div>
                       Market & Trend Analysis
                     </h3>
-                    <p className="text-slate-300 text-sm leading-relaxed pl-5">
-                      Assess market size, timing, competitive landscape, and adoption drivers. Use relevant historical funding patterns in blockchain and AI.
-                    </p>
+                    <Textarea
+                      value={analysisForms.marketAnalysis}
+                      onChange={(e) => handleFormChange('marketAnalysis', e.target.value)}
+                      placeholder="Assess market size, timing, competitive landscape, and adoption drivers. Use relevant historical funding patterns in blockchain and AI..."
+                      className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400 focus:border-blue-500 min-h-[80px]"
+                    />
                   </div>
 
                   {/* Team Assessment */}
@@ -149,9 +171,12 @@ export default function Home() {
                       <div className="w-2 h-2 bg-green-400 rounded-full mr-3"></div>
                       Team Assessment
                     </h3>
-                    <p className="text-slate-300 text-sm leading-relaxed pl-5">
-                      Judge founder-market fit, technical strength, execution capability, and uniqueness.
-                    </p>
+                    <Textarea
+                      value={analysisForms.teamAssessment}
+                      onChange={(e) => handleFormChange('teamAssessment', e.target.value)}
+                      placeholder="Judge founder-market fit, technical strength, execution capability, and uniqueness..."
+                      className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400 focus:border-green-500 min-h-[80px]"
+                    />
                   </div>
 
                   {/* Traction & Metrics */}
@@ -160,9 +185,12 @@ export default function Home() {
                       <div className="w-2 h-2 bg-purple-400 rounded-full mr-3"></div>
                       Traction & Metrics
                     </h3>
-                    <p className="text-slate-300 text-sm leading-relaxed pl-5">
-                      Analyze product stage, key KPIs, and growth trajectory.
-                    </p>
+                    <Textarea
+                      value={analysisForms.traction}
+                      onChange={(e) => handleFormChange('traction', e.target.value)}
+                      placeholder="Analyze product stage, key KPIs, and growth trajectory..."
+                      className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400 focus:border-purple-500 min-h-[80px]"
+                    />
                   </div>
 
                   {/* Risk Profile */}
@@ -171,9 +199,12 @@ export default function Home() {
                       <div className="w-2 h-2 bg-red-400 rounded-full mr-3"></div>
                       Risk Profile
                     </h3>
-                    <p className="text-slate-300 text-sm leading-relaxed pl-5">
-                      Identify main risks (technical, regulatory, market, adoption).
-                    </p>
+                    <Textarea
+                      value={analysisForms.risks}
+                      onChange={(e) => handleFormChange('risks', e.target.value)}
+                      placeholder="Identify main risks (technical, regulatory, market, adoption)..."
+                      className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400 focus:border-red-500 min-h-[80px]"
+                    />
                   </div>
 
                   {/* Valuation & Funding */}
@@ -182,9 +213,12 @@ export default function Home() {
                       <div className="w-2 h-2 bg-yellow-400 rounded-full mr-3"></div>
                       Valuation & Funding
                     </h3>
-                    <p className="text-slate-300 text-sm leading-relaxed pl-5">
-                      Recommend valuation and round size based on comparable deals and market heat.
-                    </p>
+                    <Textarea
+                      value={analysisForms.valuation}
+                      onChange={(e) => handleFormChange('valuation', e.target.value)}
+                      placeholder="Recommend valuation and round size based on comparable deals and market heat..."
+                      className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400 focus:border-yellow-500 min-h-[80px]"
+                    />
                   </div>
 
                   {/* Investment Decision */}
@@ -193,9 +227,12 @@ export default function Home() {
                       <div className="w-2 h-2 bg-cyan-400 rounded-full mr-3"></div>
                       Investment Decision
                     </h3>
-                    <p className="text-slate-300 text-sm leading-relaxed pl-5">
-                      State whether to invest, why, and what check size to write.
-                    </p>
+                    <Textarea
+                      value={analysisForms.decision}
+                      onChange={(e) => handleFormChange('decision', e.target.value)}
+                      placeholder="State whether to invest, why, and what check size to write..."
+                      className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400 focus:border-cyan-500 min-h-[80px]"
+                    />
                   </div>
                 </div>
               </CardContent>
@@ -248,9 +285,10 @@ export default function Home() {
 
                   <div className="mt-4 p-4 rounded-lg bg-gradient-to-r from-orange-900/20 to-orange-800/20 border border-orange-700/50">
                     <h4 className="text-orange-400 font-semibold mb-2">One-Sentence Memo Headline:</h4>
-                    <p className="text-slate-300 text-sm italic">
-                      Short A16Z-style investment summary
-                    </p>
+                    <Input
+                      placeholder="Short A16Z-style investment summary..."
+                      className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400 focus:border-orange-500"
+                    />
                   </div>
                 </div>
               </CardContent>

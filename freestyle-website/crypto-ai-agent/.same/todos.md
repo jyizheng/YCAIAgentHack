@@ -1,9 +1,10 @@
-# Crypto AI Agent - Development Todos
+# Crypto Investment - Development Todos
 
 ## Core Features
 - [x] AI chat interface for crypto VC investment analysis
 - [x] A16Z-style investment analysis framework
-- [x] Structured investment memo template
+- [x] Interactive investment memo form with input fields
+- [x] Structured analysis template with all 7 sections
 - [x] VC investment recommendations through AI chat
 - [ ] Price alerts and notifications
 - [ ] Technical analysis charts
@@ -33,6 +34,9 @@
 - [x] Changed all messaging to emphasize venture capital investment perspective
 - [x] Implemented A16Z-style investment analysis framework (Version 4)
 - [x] Removed news section and added Company Information with structured investment analysis
+- [x] Updated brand name from "CryptoAI Agent" to "Crypto Investment" (Version 5)
+- [x] Converted all descriptions to interactive form inputs (Version 6)
+- [x] Added state management for investment analysis form
 - [x] Successfully deployed at: https://same-immr168goi7-latest.netlify.app
 
 ## Next Steps for Enhancement
