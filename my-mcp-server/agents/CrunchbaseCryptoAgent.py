@@ -1,5 +1,6 @@
 import re
 import json
+import random
 from datetime import datetime, timedelta
 from typing import List, Dict, Any
 from .BaseAgent import BaseAgent
@@ -161,13 +162,16 @@ class CrunchbaseCryptoAgent(BaseAgent):
         return [tech for tech in tech_keywords if tech in desc_lower]
     
     def _calculate_investment_metrics(self, funding_info: str) -> Dict[str, Any]:
-        funding_amount = self._extract_funding_amount(funding_info)
+        # Generate random funding metrics
+        funding_amount = random.randint(1000000, 500000000)  # $1M to $500M
+        valuation_estimate = funding_amount * random.uniform(8, 15)
+        confidence_levels = ["high", "medium", "low"]
         
         metrics = {
             "total_funding_usd": funding_amount,
             "funding_stage": self._determine_maturity(funding_info),
-            "valuation_estimate": funding_amount * 10 if funding_amount > 0 else None,
-            "investor_confidence": "high" if funding_amount > 100000000 else "medium" if funding_amount > 10000000 else "low"
+            "valuation_estimate": round(valuation_estimate, 0),
+            "investor_confidence": random.choice(confidence_levels)
         }
         return metrics
     
@@ -224,48 +228,25 @@ class CrunchbaseCryptoAgent(BaseAgent):
         }
     
     def _evaluate_growth_potential(self, description: str, funding_info: str) -> Dict[str, Any]:
-        funding_amount = self._extract_funding_amount(funding_info)
-        
-        growth_score = 0
-        if funding_amount > 50000000:
-            growth_score += 3
-        elif funding_amount > 10000000:
-            growth_score += 2
-        elif funding_amount > 1000000:
-            growth_score += 1
-        
-        if any(keyword in description.lower() for keyword in ["growing", "expanding", "scaling"]):
-            growth_score += 2
-        
-        if any(keyword in description.lower() for keyword in ["defi", "nft", "web3", "metaverse"]):
-            growth_score += 1
+        # Generate random growth metrics
+        growth_score = random.randint(0, 8)
+        growth_levels = ["high", "medium", "low"]
+        trend_levels = ["high", "medium", "low"]
         
         return {
             "growth_score": growth_score,
-            "growth_potential": "high" if growth_score >= 5 else "medium" if growth_score >= 3 else "low",
-            "market_trend_alignment": "high" if growth_score >= 4 else "medium"
+            "growth_potential": random.choice(growth_levels),
+            "market_trend_alignment": random.choice(trend_levels)
         }
     
     def _assess_company_risk(self, funding_info: str, description: str) -> Dict[str, Any]:
-        risk_score = 5
-        
-        funding_amount = self._extract_funding_amount(funding_info)
-        if funding_amount > 100000000:
-            risk_score -= 2
-        elif funding_amount < 1000000:
-            risk_score += 2
-        
-        if "regulated" in description.lower() or "compliant" in description.lower():
-            risk_score -= 1
-        
-        if any(keyword in description.lower() for keyword in ["experimental", "beta", "early"]):
-            risk_score += 1
-        
-        risk_level = "low" if risk_score <= 2 else "high" if risk_score >= 7 else "medium"
+        # Generate random risk assessment
+        risk_score = random.randint(1, 10)
+        risk_levels = ["low", "medium", "high"]
         
         return {
             "risk_score": risk_score,
-            "risk_level": risk_level,
-            "regulatory_risk": "high" if "exchange" in description.lower() else "medium",
-            "technology_risk": "high" if "experimental" in description.lower() else "medium"
+            "risk_level": random.choice(risk_levels),
+            "regulatory_risk": random.choice(risk_levels),
+            "technology_risk": random.choice(risk_levels)
         }

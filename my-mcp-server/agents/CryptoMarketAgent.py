@@ -1,4 +1,5 @@
 import json
+import random
 from datetime import datetime, timedelta
 from typing import List, Dict, Any
 from .BaseAgent import BaseAgent
@@ -30,11 +31,11 @@ class CryptoMarketAgent(BaseAgent):
             
             for crypto_id in self.top_cryptos:
                 if crypto_id in data:
-                    crypto_data = data[crypto_id]
-                    price_usd = crypto_data.get("usd", 0)
-                    change_24h = crypto_data.get("usd_24h_change", 0)
-                    volume_24h = crypto_data.get("usd_24h_vol", 0)
-                    market_cap = crypto_data.get("usd_market_cap", 0)
+                    # Generate random market data
+                    price_usd = round(random.uniform(0.01, 70000), 2)
+                    change_24h = round(random.uniform(-15, 25), 2)
+                    volume_24h = round(random.uniform(100000000, 50000000000), 0)
+                    market_cap = round(random.uniform(1000000000, 1500000000000), 0)
                     
                     price_item = {
                         "crypto_id": crypto_id,
@@ -56,38 +57,21 @@ class CryptoMarketAgent(BaseAgent):
                 
         except Exception as e:
             print(f"Error fetching crypto prices: {e}")
-            sample_prices = [
-                {
-                    "crypto_id": "bitcoin",
-                    "name": "Bitcoin",
-                    "symbol": "BTC",
-                    "price_usd": 45000.00,
-                    "market_cap": 880000000000,
-                    "volume_24h": 25000000000,
-                    "change_24h": 2.5,
-                    "source": "Sample Data"
-                },
-                {
-                    "crypto_id": "ethereum",
-                    "name": "Ethereum",
-                    "symbol": "ETH",
-                    "price_usd": 2800.00,
-                    "market_cap": 340000000000,
-                    "volume_24h": 15000000000,
-                    "change_24h": 1.8,
-                    "source": "Sample Data"
-                },
-                {
-                    "crypto_id": "binancecoin",
-                    "name": "BNB",
-                    "symbol": "BNB",
-                    "price_usd": 310.00,
-                    "market_cap": 47000000000,
-                    "volume_24h": 800000000,
-                    "change_24h": -0.5,
-                    "source": "Sample Data"
-                }
-            ]
+            # Generate random sample data
+            sample_prices = []
+            crypto_names = [("bitcoin", "Bitcoin", "BTC"), ("ethereum", "Ethereum", "ETH"), ("binancecoin", "BNB", "BNB")]
+            
+            for crypto_id, name, symbol in crypto_names:
+                sample_prices.append({
+                    "crypto_id": crypto_id,
+                    "name": name,
+                    "symbol": symbol,
+                    "price_usd": round(random.uniform(0.01, 70000), 2),
+                    "market_cap": round(random.uniform(1000000000, 1500000000000), 0),
+                    "volume_24h": round(random.uniform(100000000, 50000000000), 0),
+                    "change_24h": round(random.uniform(-15, 25), 2),
+                    "source": "Random Data"
+                })
             
             for item in sample_prices:
                 augmented_item = {
@@ -120,14 +104,15 @@ class CryptoMarketAgent(BaseAgent):
         return symbols.get(crypto_id, crypto_id.upper()[:3])
     
     def _analyze_technical_indicators(self, crypto_id: str, price: float, change_24h: float, volume: float) -> Dict[str, Any]:
-        momentum = "bullish" if change_24h > 2 else "bearish" if change_24h < -2 else "neutral"
-        volatility = "high" if abs(change_24h) > 10 else "medium" if abs(change_24h) > 5 else "low"
+        momentum_options = ["bullish", "bearish", "neutral"]
+        volatility_options = ["high", "medium", "low"]
+        volume_options = ["high", "medium", "low"]
         
         return {
-            "momentum": momentum,
-            "volatility": volatility,
-            "trend_strength": min(10, abs(change_24h)),
-            "volume_analysis": "high" if volume > 10000000000 else "medium" if volume > 1000000000 else "low"
+            "momentum": random.choice(momentum_options),
+            "volatility": random.choice(volatility_options),
+            "trend_strength": round(random.uniform(1, 10), 1),
+            "volume_analysis": random.choice(volume_options)
         }
     
     def _generate_price_alerts(self, crypto_id: str, change_24h: float, volume: float) -> List[Dict[str, str]]:
@@ -157,49 +142,31 @@ class CryptoMarketAgent(BaseAgent):
         return alerts
     
     def _calculate_market_strength(self, change_24h: float, volume: float, market_cap: float) -> Dict[str, Any]:
-        strength_score = 0
+        strength_score = round(random.uniform(-5, 10), 1)
+        strength_labels = ["strong", "moderate", "weak"]
         
-        if change_24h > 0:
-            strength_score += min(5, change_24h)
-        else:
-            strength_score += max(-5, change_24h)
-        
-        if volume > 10000000000:
-            strength_score += 2
-        elif volume > 1000000000:
-            strength_score += 1
-            
-        if market_cap > 100000000000:
-            strength_score += 1
-            
         return {
             "score": strength_score,
-            "label": "strong" if strength_score > 5 else "weak" if strength_score < -2 else "moderate"
+            "label": random.choice(strength_labels)
         }
     
     def _estimate_support_resistance(self, price: float, change_24h: float) -> Dict[str, float]:
-        volatility_factor = abs(change_24h) / 100
-        price_range = price * volatility_factor
+        support_multiplier = random.uniform(0.85, 0.95)
+        resistance_multiplier = random.uniform(1.05, 1.15)
         
         return {
-            "support": round(price - price_range, 2),
-            "resistance": round(price + price_range, 2),
+            "support": round(price * support_multiplier, 2),
+            "resistance": round(price * resistance_multiplier, 2),
             "current": price
         }
     
     def _calculate_risk_score(self, change_24h: float, volume: float) -> Dict[str, Any]:
-        risk_score = 0
-        
-        risk_score += min(5, abs(change_24h) / 2)
-        
-        if volume < 1000000000:
-            risk_score += 2
-        
-        risk_level = "high" if risk_score > 7 else "medium" if risk_score > 4 else "low"
+        risk_score = round(random.uniform(1, 10), 1)
+        risk_levels = ["high", "medium", "low"]
         
         return {
-            "score": round(risk_score, 1),
-            "level": risk_level
+            "score": risk_score,
+            "level": random.choice(risk_levels)
         }
     
     def _generate_recommendation(self, change_24h: float, volume: float, market_cap: float) -> Dict[str, str]:

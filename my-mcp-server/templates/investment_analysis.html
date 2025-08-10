@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YC Investment Analysis Platform</title>
+    <link rel="stylesheet" href="/static/css/investment_style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 YC Investment Analysis Platform</h1>
+            <p class="subtitle">Comprehensive Crypto Company Investment Analysis</p>
+        </header>
+
+        <div class="search-section">
+            <div class="search-box">
+                <input type="text" id="companyInput" placeholder="Enter company name (e.g., Coinbase, Binance, Chainlink)">
+                <button id="analyzeBtn" onclick="analyzeCompany()">
+                    <span class="btn-text">Analyze Investment</span>
+                    <span class="spinner" style="display: none;">⏳</span>
+                </button>
+            </div>
+            <div id="errorMessage" class="error-message"></div>
+        </div>
+
+        <div id="loadingOverlay" class="loading-overlay">
+            <div class="loading-content">
+                <div class="loading-spinner"></div>
+                <p>Analyzing investment opportunity...</p>
+                <p class="loading-status">Collecting market data...</p>
+            </div>
+        </div>
+
+        <div id="resultsSection" class="results-section" style="display: none;">
+            
+            <!-- YC Investment Recommendation -->
+            <div class="recommendation-card">
+                <h2>💡 YC Investment Recommendation</h2>
+                <div class="recommendation-content">
+                    <div class="decision-box">
+                        <div class="decision-label">Investment Decision</div>
+                        <div id="investmentDecision" class="decision-value">-</div>
+                    </div>
+                    
+                    <div class="investment-metrics">
+                        <div class="metric-card">
+                            <div class="metric-label">Recommended Investment</div>
+                            <div id="recommendedAmount" class="metric-value">$0</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Equity Stake</div>
+                            <div id="equityStake" class="metric-value">0%</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Valuation</div>
+                            <div id="companyValuation" class="metric-value">$0</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Risk Score</div>
+                            <div id="riskScore" class="metric-value">0/10</div>
+                        </div>
+                    </div>
+
+                    <div class="investment-details">
+                        <h3>Investment Structure</h3>
+                        <div id="investmentStructure" class="structure-content"></div>
+                    </div>
+
+                    <div class="investment-report">
+                        <h3>Detailed Investment Report</h3>
+                        <div id="detailedReport" class="report-content"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Raw Data Sections -->
+            <div class="data-grid">
+                <!-- Crypto News Analysis -->
+                <div class="data-card">
+                    <div class="card-header">
+                        <h3>📰 Crypto News Analysis</h3>
+                        <span class="data-source">CryptoNewsAgent</span>
+                    </div>
+                    <div class="card-content">
+                        <div id="newsData" class="raw-data">
+                            <div class="data-loading">Loading news data...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Market Data -->
+                <div class="data-card">
+                    <div class="card-header">
+                        <h3>📈 Market Data</h3>
+                        <span class="data-source">CryptoMarketAgent</span>
+                    </div>
+                    <div class="card-content">
+                        <div id="marketData" class="raw-data">
+                            <div class="data-loading">Loading market data...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Company Profile -->
+                <div class="data-card full-width">
+                    <div class="card-header">
+                        <h3>🏢 Company Profile</h3>
+                        <span class="data-source">CrunchbaseCryptoAgent</span>
+                    </div>
+                    <div class="card-content">
+                        <div id="companyData" class="raw-data">
+                            <div class="data-loading">Loading company data...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Investment Timeline -->
+            <div class="timeline-section">
+                <h2>📅 Proposed Investment Timeline</h2>
+                <div id="investmentTimeline" class="timeline-content"></div>
+            </div>
+
+            <!-- Risk Analysis Chart -->
+            <div class="chart-section">
+                <h2>📊 Risk-Return Analysis</h2>
+                <canvas id="riskReturnChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/investment_app.js"></script>
+</body>
+</html>

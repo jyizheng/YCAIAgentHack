@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, request
 from flask_socketio import SocketIO, emit
 import asyncio
 import threading
@@ -8,6 +8,7 @@ from data_store import DataStore
 from agents.CryptoNewsAgent import CryptoNewsAgent
 from agents.CryptoMarketAgent import CryptoMarketAgent
 from agents.CrunchbaseCryptoAgent import CrunchbaseCryptoAgent
+from agents.YCInvestmentAgent import YCInvestmentAgent
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key-here'
@@ -87,6 +88,10 @@ def background_collector():
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/investment')
+def investment_analysis():
+    return render_template('investment_analysis.html')
 
 @app.route('/api/data')
 def get_data():
@@ -207,6 +212,94 @@ def handle_update_request():
         'timestamp': datetime.now().isoformat(),
         'data': data_store.get_all_data()
     })
+
+@app.route('/api/investment-analysis', methods=['POST'])
+def analyze_investment():
+    try:
+        data = request.get_json()
+        company_name = data.get('company_name', '').strip()
+        
+        if not company_name:
+            return jsonify({
+                'status': 'error',
+                'error': 'Company name is required'
+            }), 400
+        
+        # Initialize YC Investment Agent
+        yc_agent = YCInvestmentAgent(data_store)
+        
+        # Collect data from all agents for the company
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        
+        async def collect_and_analyze():
+            # Collect news data
+            news_agent = CryptoNewsAgent(data_store)
+            news_data = await news_agent.collect()
+            
+            # Collect market data
+            market_agent = CryptoMarketAgent(data_store)
+            market_data = await market_agent.collect()
+            
+            # Collect company data
+            crunchbase_agent = CrunchbaseCryptoAgent(data_store)
+            company_data = await crunchbase_agent.collect()
+            
+            # Filter relevant data for the company
+            relevant_news = [item for item in news_data 
+                           if company_name.lower() in item.get('title', '').lower() 
+                           or company_name.lower() in item.get('description', '').lower()]
+            
+            relevant_market = [item for item in market_data 
+                             if company_name.lower() in item.get('name', '').lower()
+                             or company_name.lower() in item.get('crypto_id', '').lower()]
+            
+            relevant_company = [item for item in company_data 
+                              if company_name.lower() in item.get('company_name', '').lower()]
+            
+            # If no specific data found, use general market data
+            if not relevant_news:
+                relevant_news = news_data[:5]  # Top 5 news items
+            if not relevant_market:
+                relevant_market = market_data[:3]  # Top 3 market items
+            if not relevant_company:
+                # Create synthetic company data
+                relevant_company = [{
+                    "company_name": company_name,
+                    "description": f"Cryptocurrency/blockchain company operating in the digital asset space",
+                    "funding_info": "Unknown",
+                    "category": "Crypto/Blockchain",
+                    "source": "User Input"
+                }]
+            
+            # Perform YC investment analysis
+            analysis = await yc_agent.analyze_investment(
+                company_name,
+                relevant_news,
+                relevant_market,
+                relevant_company
+            )
+            
+            return {
+                'news_data': relevant_news,
+                'market_data': relevant_market,
+                'company_data': relevant_company,
+                'yc_analysis': analysis
+            }
+        
+        result = loop.run_until_complete(collect_and_analyze())
+        
+        return jsonify({
+            'status': 'success',
+            **result
+        })
+        
+    except Exception as e:
+        print(f"Investment analysis error: {e}")
+        return jsonify({
+            'status': 'error',
+            'error': str(e)
+        }), 500
 
 if __name__ == '__main__':
     initialize_agents()
